@@ -1,0 +1,1343 @@
+{
+  "roles": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('roles_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "name",
+        "type": "VARCHAR(50)",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "description",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "is_paid",
+        "type": "BOOLEAN",
+        "nullable": true,
+        "default": "false",
+        "autoincrement": false
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [],
+    "indexes": []
+  },
+  "users": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "UUID",
+        "nullable": false,
+        "default": "uuid_generate_v4()",
+        "autoincrement": false
+      },
+      {
+        "name": "name",
+        "type": "VARCHAR(255)",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "email",
+        "type": "VARCHAR(255)",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "password_hash",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "role_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "coach_id",
+        "type": "UUID",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "name": "users_coach_id_fkey",
+        "constrained_columns": [
+          "coach_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "users",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "users_role_id_fkey",
+        "constrained_columns": [
+          "role_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "roles",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "clients_profile": {
+    "columns": [
+      {
+        "name": "user_id",
+        "type": "UUID",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "height",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "weight",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "neck",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "waist",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "hip",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "bodyfat_percentage",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "bmi",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "goals",
+        "type": "ARRAY",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "injuries",
+        "type": "ARRAY",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "medical_notes",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "user_id"
+    ],
+    "foreign_keys": [
+      {
+        "name": "clients_profile_user_id_fkey",
+        "constrained_columns": [
+          "user_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "users",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "exercises": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('exercises_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "name",
+        "type": "VARCHAR(255)",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "short_name",
+        "type": "VARCHAR(50)",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "description",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "coach_id",
+        "type": "UUID",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "category_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "movement_type_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "muscle_group_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "equipment_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "position_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "contraction_type_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "type",
+        "type": "VARCHAR(100)",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "crossfit_variant",
+        "type": "JSON",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "autoincrement": false
+      },
+      {
+        "name": "updated_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "name": "exercises_category_id_fkey",
+        "constrained_columns": [
+          "category_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "exercise_categories",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "exercises_coach_id_fkey",
+        "constrained_columns": [
+          "coach_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "users",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "exercises_contraction_type_id_fkey",
+        "constrained_columns": [
+          "contraction_type_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "contraction_types",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "exercises_equipment_id_fkey",
+        "constrained_columns": [
+          "equipment_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "equipment",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "exercises_movement_type_id_fkey",
+        "constrained_columns": [
+          "movement_type_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "movement_types",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "exercises_muscle_group_id_fkey",
+        "constrained_columns": [
+          "muscle_group_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "muscle_groups",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "exercises_position_id_fkey",
+        "constrained_columns": [
+          "position_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "positions",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "exercise_categories": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('exercise_categories_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "name",
+        "type": "VARCHAR(100)",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "displacement",
+        "type": "BOOLEAN",
+        "nullable": true,
+        "default": "false",
+        "autoincrement": false
+      },
+      {
+        "name": "metabolic_type",
+        "type": "VARCHAR(100)",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [],
+    "indexes": []
+  },
+  "movement_types": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('movement_types_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "name",
+        "type": "VARCHAR(100)",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [],
+    "indexes": []
+  },
+  "muscle_groups": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('muscle_groups_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "name",
+        "type": "VARCHAR(100)",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [],
+    "indexes": []
+  },
+  "equipment": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('equipment_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "name",
+        "type": "VARCHAR(100)",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [],
+    "indexes": []
+  },
+  "positions": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('positions_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "name",
+        "type": "VARCHAR(100)",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [],
+    "indexes": []
+  },
+  "contraction_types": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('contraction_types_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "name",
+        "type": "VARCHAR(100)",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [],
+    "indexes": []
+  },
+  "plans": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('plans_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "name",
+        "type": "VARCHAR(255)",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "coach_id",
+        "type": "UUID",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "duration_weeks",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "autoincrement": false
+      },
+      {
+        "name": "updated_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "name": "plans_coach_id_fkey",
+        "constrained_columns": [
+          "coach_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "users",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "plan_versions": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('plan_versions_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "plan_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "version_number",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "data",
+        "type": "JSON",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "name": "plan_versions_plan_id_fkey",
+        "constrained_columns": [
+          "plan_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "plans",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "workout_sessions": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('workout_sessions_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "plan_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "client_id",
+        "type": "UUID",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "date",
+        "type": "DATE",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "completed",
+        "type": "BOOLEAN",
+        "nullable": true,
+        "default": "false",
+        "autoincrement": false
+      },
+      {
+        "name": "notes",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "name": "workout_sessions_client_id_fkey",
+        "constrained_columns": [
+          "client_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "users",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "workout_sessions_plan_id_fkey",
+        "constrained_columns": [
+          "plan_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "plans",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "workout_exercises": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('workout_exercises_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "session_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "exercise_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "sets_planned",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "reps_planned",
+        "type": "VARCHAR(50)",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "weight_planned",
+        "type": "VARCHAR(50)",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "rest_between_sets",
+        "type": "VARCHAR(50)",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "sets_done",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "reps_done",
+        "type": "JSON",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "weight_used",
+        "type": "VARCHAR(50)",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "time_spent",
+        "type": "VARCHAR(50)",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "reps_in_time",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "name": "workout_exercises_exercise_id_fkey",
+        "constrained_columns": [
+          "exercise_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "exercises",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "workout_exercises_session_id_fkey",
+        "constrained_columns": [
+          "session_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "workout_sessions",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "exercise_progress": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('exercise_progress_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "client_id",
+        "type": "UUID",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "exercise_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "max_weight_lifted",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "last_weight_used",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "last_session_date",
+        "type": "DATE",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "name": "exercise_progress_client_id_fkey",
+        "constrained_columns": [
+          "client_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "users",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "exercise_progress_exercise_id_fkey",
+        "constrained_columns": [
+          "exercise_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "exercises",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "shared_exercises": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('shared_exercises_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "exercise_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "coach_id",
+        "type": "UUID",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "can_edit",
+        "type": "BOOLEAN",
+        "nullable": true,
+        "default": "false",
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "name": "shared_exercises_coach_id_fkey",
+        "constrained_columns": [
+          "coach_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "users",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "shared_exercises_exercise_id_fkey",
+        "constrained_columns": [
+          "exercise_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "exercises",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "shared_plans": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('shared_plans_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "plan_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "coach_id",
+        "type": "UUID",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "can_edit",
+        "type": "BOOLEAN",
+        "nullable": true,
+        "default": "false",
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "name": "shared_plans_coach_id_fkey",
+        "constrained_columns": [
+          "coach_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "users",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "shared_plans_plan_id_fkey",
+        "constrained_columns": [
+          "plan_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "plans",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "subscriptions": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('subscriptions_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "user_id",
+        "type": "UUID",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "plan_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "start_date",
+        "type": "DATE",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "end_date",
+        "type": "DATE",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "status",
+        "type": "VARCHAR(20)",
+        "nullable": true,
+        "default": "'active'::character varying",
+        "autoincrement": false
+      },
+      {
+        "name": "payment_method",
+        "type": "VARCHAR(50)",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "name": "subscriptions_plan_id_fkey",
+        "constrained_columns": [
+          "plan_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "roles",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      },
+      {
+        "name": "subscriptions_user_id_fkey",
+        "constrained_columns": [
+          "user_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "users",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "indexes": []
+  },
+  "client_assessments": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "nextval('client_assessments_id_seq'::regclass)",
+        "autoincrement": true
+      },
+      {
+        "name": "client_id",
+        "type": "UUID",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "date",
+        "type": "DATE",
+        "nullable": false,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "height",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "weight",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "neck",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "waist",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "hip",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "bodyfat_percentage",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "bmi",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "flexibility_test_score",
+        "type": "DOUBLE PRECISION",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "strength_test_score",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "endurance_test_time",
+        "type": "INTERVAL",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "notes",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "autoincrement": false
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "autoincrement": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "name": "client_assessments_client_id_fkey",
+        "constrained_columns": [
+          "client_id"
+        ],
+        "referred_schema": null,
+        "referred_table": "users",
+        "referred_columns": [
+          "id"
+        ],
+        "options": {},
+        "comment": null
+      }
+    ],
+    "indexes": []
+  }
+}
