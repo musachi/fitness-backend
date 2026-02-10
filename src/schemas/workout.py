@@ -18,7 +18,7 @@ class WorkoutExerciseTracking(BaseModel):
 
     # Tracking data
     current_set: int = 0
-    sets_completed: List[dict] = []
+    sets_completed: list[dict] = []
     is_completed: bool = False
 
     class Config:
@@ -54,7 +54,7 @@ class WorkoutSessionProgress(BaseModel):
     total_exercises: int
     completed_exercises: int
     current_exercise: Optional[WorkoutExerciseTracking] = None
-    remaining_exercises: List[WorkoutExerciseTracking] = []
+    remaining_exercises: list[WorkoutExerciseTracking] = []
     progress_percentage: float = Field(..., ge=0, le=100)
     estimated_time_remaining: Optional[str] = None
 
@@ -69,7 +69,7 @@ class WorkoutDay(BaseModel):
     week_number: int
     name: str
     focus: str
-    exercises: List[dict]  # Exercise data with sets/reps
+    exercises: list[dict]  # Exercise data with sets/reps
 
     class Config:
         from_attributes = True
@@ -78,7 +78,7 @@ class WorkoutDay(BaseModel):
 class WorkoutWeek(BaseModel):
     """Schema para una semana de entrenamiento."""
     week_number: int
-    days: List[WorkoutDay]
+    days: list[WorkoutDay]
 
     class Config:
         from_attributes = True
@@ -89,7 +89,7 @@ class WorkoutPlanStructure(BaseModel):
     plan_id: int
     name: str
     duration_weeks: int
-    weeks: List[WorkoutWeek]
+    weeks: list[WorkoutWeek]
 
     class Config:
         from_attributes = True
@@ -100,7 +100,7 @@ class QuickWorkoutRequest(BaseModel):
     """Schema para crear un workout rápido."""
     focus: str  # "chest", "legs", "full_body", etc.
     duration_minutes: int = Field(..., ge=10, le=120)
-    equipment_available: Optional[List[str]] = None
+    equipment_available: Optional[list[str]] = None
     difficulty_level: int = Field(3, ge=1, le=5)
 
 
@@ -121,9 +121,9 @@ class QuickWorkoutResponse(BaseModel):
     """Schema para respuesta de workout rápido generado."""
     workout_name: str
     total_duration: str
-    exercises: List[QuickWorkoutExercise]
-    warmup_suggestions: List[str]
-    cooldown_suggestions: List[str]
+    exercises: list[QuickWorkoutExercise]
+    warmup_suggestions: list[str]
+    cooldown_suggestions: list[str]
 
     class Config:
         from_attributes = True

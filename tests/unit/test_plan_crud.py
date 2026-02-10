@@ -1,11 +1,17 @@
-import pytest
-from unittest.mock import Mock, MagicMock
-from uuid import uuid4
 from datetime import date
+from unittest.mock import MagicMock, Mock
+from uuid import uuid4
 
-from src.crud.plan import PlanCRUD, WorkoutSessionCRUD, WorkoutExerciseCRUD
-from src.models.plan import Plan, WorkoutSession, WorkoutExercise
-from src.schemas.plan import PlanCreate, PlanUpdate, WorkoutSessionCreate, WorkoutSessionUpdate
+import pytest
+
+from src.crud.plan import PlanCRUD, WorkoutExerciseCRUD, WorkoutSessionCRUD
+from src.models.plan import Plan, WorkoutExercise, WorkoutSession
+from src.schemas.plan import (
+    PlanCreate,
+    PlanUpdate,
+    WorkoutSessionCreate,
+    WorkoutSessionUpdate,
+)
 
 
 class TestPlanCRUD:

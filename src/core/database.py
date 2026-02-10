@@ -6,8 +6,14 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from .config import settings
 
-# Crear engine
-engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True, echo=settings.DEBUG)
+# Crear engine con configuración para evitar problemas de caché
+engine = create_engine(
+    settings.DATABASE_URL, 
+    pool_pre_ping=True, 
+    echo=settings.DEBUG,
+    pool_recycle=3600,  # Recrear conexiones cada hora
+    connect_args={"options": "-c timezone=UTC"}  # Configuración específica para PostgreSQL
+)
 
 # Session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

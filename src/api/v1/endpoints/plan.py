@@ -6,18 +6,27 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
+from src.api.deps import get_current_active_user, get_current_coach_or_admin
 from src.core.database import get_db
-from src.crud.plan import plan, workout_session, workout_exercise
+from src.crud.plan import plan, workout_exercise, workout_session
+from src.models.user import User
 from src.schemas.common import SuccessResponse
 from src.schemas.plan import (
-    PlanCreate, PlanUpdate, PlanResponse, PlansList,
-    WorkoutSessionCreate, WorkoutSessionUpdate, WorkoutSessionResponse, WorkoutSessionsList,
-    WorkoutExerciseResponse, WorkoutExercisesList,
-    PlanTemplate, PlanFromTemplateRequest, PlanFromTemplateResponse
+    PlanCreate,
+    PlanFromTemplateRequest,
+    PlanFromTemplateResponse,
+    PlanResponse,
+    PlansList,
+    PlanTemplate,
+    PlanUpdate,
+    WorkoutExerciseResponse,
+    WorkoutExercisesList,
+    WorkoutSessionCreate,
+    WorkoutSessionResponse,
+    WorkoutSessionsList,
+    WorkoutSessionUpdate,
 )
 from src.services.plan_generator import PlanGenerator
-from src.api.deps import get_current_active_user, get_current_coach_or_admin
-from src.models.user import User
 
 router = APIRouter()
 

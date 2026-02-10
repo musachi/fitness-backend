@@ -1,4 +1,6 @@
+from typing import Union
 from uuid import UUID
+from datetime import datetime
 
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -72,6 +74,24 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         # Create user data dict
         user_data = obj_in.dict(exclude={"password"})
         user_data["password_hash"] = hashed_password
+
+        # Create user
+        db_obj = User(**user_data)
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+        return db_obj
+
+    def create_coach_pending_approval(self, db: Session, *, obj_in: UserCreate) -> User:
+        """Create coach with pending approval"""
+        # Hash password
+        hashed_password = get_password_hash(obj_in.password)
+
+        # Create user data dict with approval fields
+        user_data = obj_in.dict(exclude={"password"})
+        user_data["password_hash"] = hashed_password
+        user_data["is_approved"] = False
+        user_data["approval_requested_at"] = datetime.utcnow()
 
         # Create user
         db_obj = User(**user_data)

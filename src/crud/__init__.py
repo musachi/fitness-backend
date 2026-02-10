@@ -14,7 +14,7 @@ from .exercise import (
     muscle_group,
     position,
 )
-from .plan import plan, workout_session, workout_exercise
+from .plan import plan, workout_exercise, workout_session
 from .user import client_profile, coach_profile, role, user
 
 __all__ = [

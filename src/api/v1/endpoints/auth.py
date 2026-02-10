@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, Form, HTTPException, status
 from sqlalchemy.orm import Session
 
-from src.api.deps import get_current_user, get_current_admin
+from src.api.deps import get_current_admin, get_current_user
 from src.core.config import settings
 from src.core.database import get_db
 from src.core.security import create_access_token
@@ -26,29 +26,46 @@ async def register(user_in: UserRegister, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
         )
 
-    # If user is requesting coach role, set is_approved to False
-    user_data = user_in.dict()
-    if user_data.get('role_id') == 2:  # Coach role
-        user_data['is_approved'] = False
-        user_data['approval_requested_at'] = datetime.utcnow()
-    else:
-        user_data['is_approved'] = True
-
     # Create new user
-    new_user = user.create(db, obj_in=user_data)
+    new_user = user.create(db, obj_in=user_in)
     return new_user
+
+
+@router.post("/register-coach", response_model=User, status_code=status.HTTP_201_CREATED)
+async def register_coach(user_in: UserRegister, db: Session = Depends(get_db)):
+    """
+    Register a new coach (requires admin approval)
+    """
+    # Check if user already exists
+    existing_user = user.get_by_email(db, email=user_in.email)
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
+        )
+
+    # Force role_id to be coach (2)
+    user_data = user_in.dict()
+    user_data['role_id'] = 2
+    
+    # Create coach with pending approval
+    from src.schemas.user import UserCreate
+    coach_create = UserCreate(**user_data)
+    new_coach = user.create_coach_pending_approval(db, obj_in=coach_create)
+    return new_coach
 
 
 @router.post("/login", response_model=LoginResponse)
 async def login(
-    login_data: LoginRequest,
-    db: Session = Depends(get_db)
+    username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)
 ):
     """
-    OAuth2 compatible token login using JSON data
+    OAuth2 compatible token login using Form data
     """
+    # Convert to our LoginRequest schema
+    login_request = LoginRequest(email=username, password=password)
+
     # Authenticate user
-    authenticated_user = user.authenticate(db, login_data=login_data)
+    authenticated_user = user.authenticate(db, login_data=login_request)
 
     if not authenticated_user:
         raise HTTPException(
@@ -144,3 +161,43 @@ async def approve_coach(
     user.approve_coach(db, coach_id=coach_id, approved_by=current_user.id)
 
     return {"message": "Coach approved successfully"}
+
+
+@router.post("/login-json", response_model=LoginResponse)
+async def login_json(
+    login_data: LoginRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Temporary JSON login endpoint for testing
+    """
+    # Authenticate user
+    authenticated_user = user.authenticate(db, login_data=login_data)
+
+    if not authenticated_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+        )
+
+    # Check if user is approved (for coaches)
+    if authenticated_user.role_id == 2 and not authenticated_user.is_approved:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Coach account is pending approval. Please wait for admin approval.",
+        )
+
+    # Create access token
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": str(authenticated_user.id), "exp": access_token_expires.total_seconds(), "type": "access"}
+    )
+
+    return LoginResponse(
+        user_id=authenticated_user.id,
+        email=authenticated_user.email,
+        name=authenticated_user.name,
+        role_id=authenticated_user.role_id,
+        access_token=access_token,
+        token_type="bearer"
+    )

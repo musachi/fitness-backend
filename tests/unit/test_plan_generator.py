@@ -1,18 +1,19 @@
-import pytest
-from unittest.mock import Mock, patch
 from datetime import date, timedelta
+from unittest.mock import Mock, patch
+
+import pytest
 from sqlalchemy.orm import Session
 
+from src.models.exercise import Exercise
+from src.models.plan import Plan, WorkoutExercise, WorkoutSession
+from src.schemas.plan import PlanGoal, PlanLevel, WorkoutFocus
 from src.services.plan_generator import (
-    PlanGenerator,
-    PlanTemplate,
     BEGINNER_FULL_BODY,
     PPL_INTERMEDIATE,
-    UPPER_LOWER_ADVANCED
+    UPPER_LOWER_ADVANCED,
+    PlanGenerator,
+    PlanTemplate,
 )
-from src.models.plan import Plan, WorkoutSession, WorkoutExercise
-from src.models.exercise import Exercise
-from src.schemas.plan import PlanGoal, PlanLevel, WorkoutFocus
 
 
 class TestPlanGenerator:

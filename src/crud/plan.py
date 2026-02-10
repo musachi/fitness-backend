@@ -1,11 +1,17 @@
 from __future__ import annotations
 
 from typing import List, Optional
-from sqlalchemy.orm import Session
-from sqlalchemy import and_, or_
 
-from src.models.plan import Plan, WorkoutSession, WorkoutExercise
-from src.schemas.plan import PlanCreate, PlanUpdate, WorkoutSessionCreate, WorkoutSessionUpdate
+from sqlalchemy import and_, or_
+from sqlalchemy.orm import Session
+
+from src.models.plan import Plan, WorkoutExercise, WorkoutSession
+from src.schemas.plan import (
+    PlanCreate,
+    PlanUpdate,
+    WorkoutSessionCreate,
+    WorkoutSessionUpdate,
+)
 
 
 class PlanCRUD:
@@ -24,7 +30,7 @@ class PlanCRUD:
         limit: int = 100,
         coach_id: Optional[str] = None,
         is_public: Optional[bool] = None
-    ) -> List[Plan]:
+    ) -> list[Plan]:
         """Get multiple plans with optional filters."""
         query = self.db.query(Plan)
 
@@ -36,7 +42,7 @@ class PlanCRUD:
 
         return query.offset(skip).limit(limit).all()
 
-    def get_by_user(self, user_id: str, skip: int = 0, limit: int = 100) -> List[Plan]:
+    def get_by_user(self, user_id: str, skip: int = 0, limit: int = 100) -> list[Plan]:
         """Get plans created by a specific user."""
         return (
             self.db.query(Plan)
@@ -46,7 +52,7 @@ class PlanCRUD:
             .all()
         )
 
-    def get_public_plans(self, skip: int = 0, limit: int = 100) -> List[Plan]:
+    def get_public_plans(self, skip: int = 0, limit: int = 100) -> list[Plan]:
         """Get public plans."""
         return (
             self.db.query(Plan)
@@ -125,7 +131,7 @@ class WorkoutSessionCRUD:
         plan_id: Optional[int] = None,
         client_id: Optional[str] = None,
         completed: Optional[bool] = None
-    ) -> List[WorkoutSession]:
+    ) -> list[WorkoutSession]:
         """Get multiple workout sessions with filters."""
         query = self.db.query(WorkoutSession)
 
@@ -140,7 +146,7 @@ class WorkoutSessionCRUD:
 
         return query.offset(skip).limit(limit).all()
 
-    def get_by_plan(self, plan_id: int, skip: int = 0, limit: int = 100) -> List[WorkoutSession]:
+    def get_by_plan(self, plan_id: int, skip: int = 0, limit: int = 100) -> list[WorkoutSession]:
         """Get workout sessions for a specific plan."""
         return (
             self.db.query(WorkoutSession)
@@ -151,7 +157,7 @@ class WorkoutSessionCRUD:
             .all()
         )
 
-    def get_by_client(self, client_id: str, skip: int = 0, limit: int = 100) -> List[WorkoutSession]:
+    def get_by_client(self, client_id: str, skip: int = 0, limit: int = 100) -> list[WorkoutSession]:
         """Get workout sessions for a specific client."""
         return (
             self.db.query(WorkoutSession)
@@ -232,7 +238,7 @@ class WorkoutExerciseCRUD:
         limit: int = 100,
         session_id: Optional[int] = None,
         exercise_id: Optional[int] = None
-    ) -> List[WorkoutExercise]:
+    ) -> list[WorkoutExercise]:
         """Get multiple workout exercises with filters."""
         query = self.db.query(WorkoutExercise)
 
@@ -244,7 +250,7 @@ class WorkoutExerciseCRUD:
 
         return query.offset(skip).limit(limit).all()
 
-    def get_by_session(self, session_id: int) -> List[WorkoutExercise]:
+    def get_by_session(self, session_id: int) -> list[WorkoutExercise]:
         """Get workout exercises for a specific session."""
         return (
             self.db.query(WorkoutExercise)
@@ -281,7 +287,7 @@ class WorkoutExerciseCRUD:
         self,
         exercise_id: int,
         sets_done: Optional[int] = None,
-        reps_done: Optional[List[int]] = None,
+        reps_done: Optional[list[int]] = None,
         weight_used: Optional[str] = None,
         time_spent: Optional[str] = None
     ) -> Optional[WorkoutExercise]:

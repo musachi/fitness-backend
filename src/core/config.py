@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Database
-    DATABASE_URL: str = "postgresql://postgres:aa@localhost:5434/premiumgym_bd"
+    DATABASE_URL: str = "postgresql://postgres:aa@localhost:5432/fitness_db"
 
     # JWT Authentication
     SECRET_KEY: str = (

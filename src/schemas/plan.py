@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, date
+from datetime import date, datetime
 from enum import StrEnum
 from typing import List, Optional
 from uuid import UUID
@@ -87,7 +87,7 @@ class WorkoutExerciseCreate(WorkoutExerciseBase):
 
 class WorkoutExerciseUpdate(BaseModel):
     sets_done: Optional[int] = Field(None, ge=0, le=20)
-    reps_done: Optional[List[int]] = None
+    reps_done: Optional[list[int]] = None
     weight_used: Optional[str] = Field(None, max_length=50)
     time_spent: Optional[str] = Field(None, max_length=50)
     reps_in_time: Optional[int] = Field(None, ge=0)
@@ -98,7 +98,7 @@ class WorkoutExerciseResponse(WorkoutExerciseBase):
     id: int
     session_id: int
     sets_done: Optional[int] = None
-    reps_done: Optional[List[int]] = None
+    reps_done: Optional[list[int]] = None
     weight_used: Optional[str] = None
     time_spent: Optional[str] = None
     reps_in_time: Optional[int] = None
@@ -112,7 +112,7 @@ class WorkoutSessionResponse(WorkoutSessionBase):
     plan_id: int
     client_id: UUID
     completed: bool = False
-    workout_exercises: List[WorkoutExerciseResponse] = []
+    workout_exercises: list[WorkoutExerciseResponse] = []
 
     class Config:
         from_attributes = True
@@ -128,7 +128,7 @@ class PlanResponse(BaseModel):
     coach_id: Optional[UUID] = None
     created_at: datetime
     updated_at: datetime
-    workout_sessions: List[WorkoutSessionResponse] = []
+    workout_sessions: list[WorkoutSessionResponse] = []
 
     class Config:
         from_attributes = True
@@ -142,7 +142,7 @@ class PlanTemplate(BaseModel):
     level: PlanLevel
     duration_weeks: int
     workouts_per_week: int
-    focus_rotation: List[WorkoutFocus]
+    focus_rotation: list[WorkoutFocus]
 
     class Config:
         from_attributes = True
@@ -163,12 +163,12 @@ class PlanFromTemplateResponse(BaseModel):
 
 # List responses
 class PlansList(BaseModel):
-    plans: List[PlanResponse]
+    plans: list[PlanResponse]
 
 
 class WorkoutSessionsList(BaseModel):
-    sessions: List[WorkoutSessionResponse]
+    sessions: list[WorkoutSessionResponse]
 
 
 class WorkoutExercisesList(BaseModel):
-    exercises: List[WorkoutExerciseResponse]
+    exercises: list[WorkoutExerciseResponse]

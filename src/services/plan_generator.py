@@ -1,13 +1,14 @@
 from __future__ import annotations
 
+import random
 from datetime import date, timedelta
 from typing import Dict, List, Optional
-from sqlalchemy.orm import Session
-import random
 
-from src.models.plan import Plan, WorkoutSession, WorkoutExercise
+from sqlalchemy.orm import Session
+
 from src.models.exercise import Exercise
-from src.schemas.plan import PlanGoal, PlanLevel, WorkoutFocus, PlanCreate, PlanResponse
+from src.models.plan import Plan, WorkoutExercise, WorkoutSession
+from src.schemas.plan import PlanCreate, PlanGoal, PlanLevel, PlanResponse, WorkoutFocus
 
 
 class PlanTemplate:
@@ -21,9 +22,9 @@ class PlanTemplate:
         level: PlanLevel,
         duration_weeks: int,
         workouts_per_week: int,
-        focus_rotation: List[WorkoutFocus],
-        exercise_rules: Dict[str, List[str]],
-        progression_rules: Dict[str, any] = None
+        focus_rotation: list[WorkoutFocus],
+        exercise_rules: dict[str, list[str]],
+        progression_rules: dict[str, any] = None
     ):
         self.name = name
         self.description = description
@@ -185,7 +186,7 @@ class PlanGenerator:
         focus: WorkoutFocus,
         template: PlanTemplate,
         week_number: int
-    ) -> List[Dict[str, any]]:
+    ) -> list[dict[str, any]]:
         """Selecciona ejercicios apropiados para el focus del día."""
 
         # Obtener ejercicios disponibles
@@ -294,7 +295,7 @@ class PlanGenerator:
 
         return selected_exercises
 
-    def get_available_templates(self) -> List[Dict[str, any]]:
+    def get_available_templates(self) -> list[dict[str, any]]:
         """Retorna la lista de templates disponibles."""
         templates = []
         for key, template in self.templates.items():
