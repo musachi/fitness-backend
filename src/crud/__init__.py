@@ -14,6 +14,7 @@ from .exercise import (
     muscle_group,
     position,
 )
+from .plan import plan, workout_session, workout_exercise
 from .user import client_profile, coach_profile, role, user
 
 __all__ = [
@@ -35,4 +36,7 @@ __all__ = [
     "EquipmentUpdate",
     "PositionUpdate",
     "ContractionTypeUpdate",
+    "plan",
+    "workout_session",
+    "workout_exercise",
 ]

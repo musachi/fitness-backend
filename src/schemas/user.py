@@ -1,8 +1,14 @@
+from __future__ import annotations
+
 from datetime import datetime
 from enum import StrEnum
+from typing import TYPE_CHECKING, Union
 from uuid import UUID
 
 from pydantic import BaseModel, EmailStr, Field
+
+if TYPE_CHECKING:
+    from .user import User
 
 
 # Enums
@@ -83,7 +89,7 @@ class Role(RoleInDB):
 
 class User(UserInDB):
     role: Role | None = None
-    coach: "User" | None = None
+    coach: User | None = None
 
 
 # Client Profile schemas

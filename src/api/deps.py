@@ -73,7 +73,19 @@ def get_current_admin(current_user: User = Depends(get_current_active_user)) -> 
     """
     if current_user.role_id != 1:  # Adjust role_id as needed
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required"
+            status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
         )
+    return current_user
 
+
+def get_current_coach_or_admin(current_user: User = Depends(get_current_active_user)) -> User:
+    """
+    Dependency to ensure user is either a coach or an admin
+    Assuming role_id 1 is admin and role_id 2 is coach
+    """
+    if current_user.role_id not in [1, 2]:  # Admin or Coach
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only coaches and admins can perform this action"
+        )
     return current_user

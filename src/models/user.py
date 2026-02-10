@@ -30,6 +30,10 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     role_id = Column(Integer, ForeignKey("roles.id"), index=True)
     coach_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    is_approved = Column(Boolean, default=True)  # For coach approval
+    approval_requested_at = Column(TIMESTAMP, nullable=True)
+    approved_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    approved_at = Column(TIMESTAMP, nullable=True)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
 
     # Relationships

@@ -118,3 +118,43 @@ __all__ = [
     "PositionsList",
     "ContractionTypesList",
 ]
+
+# Import plan schemas
+from .plan import (
+    PlanGoal,
+    PlanLevel,
+    WorkoutFocus,
+    PlanBase,
+    PlanCreate,
+    PlanUpdate,
+    PlanResponse,
+    PlansList,
+    WorkoutSessionBase,
+    WorkoutSessionCreate,
+    WorkoutSessionUpdate,
+    WorkoutSessionResponse,
+    WorkoutSessionsList,
+    WorkoutExerciseBase,
+    WorkoutExerciseCreate,
+    WorkoutExerciseUpdate,
+    WorkoutExerciseResponse,
+    WorkoutExercisesList,
+    PlanTemplate,
+    PlanFromTemplateRequest,
+    PlanFromTemplateResponse,
+)
+
+# Import workout schemas
+from .workout import (
+    WorkoutExerciseTracking,
+    WorkoutExerciseUpdate,
+    WorkoutSessionStart,
+    WorkoutSessionComplete,
+    WorkoutSessionProgress,
+    WorkoutDay,
+    WorkoutWeek,
+    WorkoutPlanStructure,
+    QuickWorkoutRequest,
+    QuickWorkoutExercise,
+    QuickWorkoutResponse,
+)

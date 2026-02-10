@@ -113,6 +113,30 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             .all()
         )
 
+    def get_pending_coaches(self, db: Session) -> list[User]:
+        """Get all coaches pending approval"""
+        return (
+            db.query(User)
+            .filter(User.role_id == 2, User.is_approved == False)
+            .all()
+        )
+
+    def approve_coach(self, db: Session, *, coach_id: str, approved_by: str) -> User:
+        """Approve a coach account"""
+        from datetime import datetime
+
+        coach = self.get(db, id=coach_id)
+        if not coach:
+            return None
+
+        coach.is_approved = True
+        coach.approved_by = approved_by
+        coach.approved_at = datetime.utcnow()
+
+        db.commit()
+        db.refresh(coach)
+        return coach
+
 
 user = CRUDUser(User)
 

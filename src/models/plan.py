@@ -22,6 +22,9 @@ class Plan(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
+    description = Column(String(1000), nullable=True)
+    goal = Column(String(50), nullable=False)  # muscle_gain, weight_loss, strength, etc.
+    level = Column(String(20), nullable=False)  # beginner, intermediate, advanced
     coach_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), index=True)
     duration_weeks = Column(Integer)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
