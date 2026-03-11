@@ -1,5 +1,6 @@
 # Import all models here so they're registered with SQLAlchemy Base
 from .base import Base, TimestampMixin
+from .classification import ClassificationType, ClassificationValue
 from .exercise import (
     ContractionType,
     Equipment,
@@ -30,6 +31,8 @@ __all__ = [
     "User",
     "ClientProfile",
     "CoachProfile",
+    "ClassificationType",
+    "ClassificationValue",
     "Exercise",
     "ExerciseCategory",
     "MovementType",

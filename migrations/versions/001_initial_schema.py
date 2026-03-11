@@ -29,8 +29,8 @@ def upgrade() -> None:
         sa.Column('description', sa.String(), nullable=True),
         sa.Column('is_paid', sa.Boolean(), nullable=True),
         sa.Column('created_at', sa.TIMESTAMP(), nullable=True),
-        sa.PrimaryKeyConstraint('pk_roles'),
-        sa.UniqueConstraint('uq_roles_name')
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('name')
     )
 
     # Create users table
@@ -44,8 +44,8 @@ def upgrade() -> None:
         sa.Column('created_at', sa.TIMESTAMP(), nullable=True),
         sa.ForeignKeyConstraint(['role_id'], 'roles', ['id'], ),
         sa.ForeignKeyConstraint(['coach_id'], 'users', ['id'], ),
-        sa.PrimaryKeyConstraint('pk_users'),
-        sa.UniqueConstraint('uq_users_email')
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('email')
     )
 
     # Create exercises table
@@ -63,7 +63,7 @@ def upgrade() -> None:
         sa.Column('updated_at', sa.TIMESTAMP(), nullable=True),
         sa.Column('coach_id', sa.UUID(), nullable=True),
         sa.ForeignKeyConstraint(['coach_id'], 'users', ['id'], ),
-        sa.PrimaryKeyConstraint('pk_exercises')
+        sa.PrimaryKeyConstraint('id')
     )
 
     # Create plans table with new fields
@@ -78,7 +78,7 @@ def upgrade() -> None:
         sa.Column('created_at', sa.TIMESTAMP(), nullable=True),
         sa.Column('updated_at', sa.TIMESTAMP(), nullable=True),
         sa.ForeignKeyConstraint(['coach_id'], 'users', ['id'], ),
-        sa.PrimaryKeyConstraint('pk_plans')
+        sa.PrimaryKeyConstraint('id')
     )
 
     # Create workout_sessions table
@@ -93,7 +93,7 @@ def upgrade() -> None:
         sa.Column('updated_at', sa.TIMESTAMP(), nullable=True),
         sa.ForeignKeyConstraint(['plan_id'], 'plans', ['id'], ),
         sa.ForeignKeyConstraint(['client_id'], 'users', ['id'], ),
-        sa.PrimaryKeyConstraint('pk_workout_sessions')
+        sa.PrimaryKeyConstraint('id')
     )
 
     # Create workout_exercises table
@@ -112,7 +112,7 @@ def upgrade() -> None:
         sa.Column('reps_in_time', sa.JSON(), nullable=True),
         sa.ForeignKeyConstraint(['session_id'], 'workout_sessions', ['id'], ),
         sa.ForeignKeyConstraint(['exercise_id'], 'exercises', ['id'], ),
-        sa.PrimaryKeyConstraint('pk_workout_exercises')
+        sa.PrimaryKeyConstraint('id')
     )
 
     # ### end Alembic commands ###
