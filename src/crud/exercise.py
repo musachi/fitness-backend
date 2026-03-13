@@ -12,6 +12,7 @@ from src.models.exercise import (
     MuscleGroup,
     Position,
 )
+from src.models.classification import ClassificationValue
 
 # En src/crud/exercise.py, cambia esta línea:
 from src.schemas.exercise import (
@@ -109,12 +110,7 @@ class CRUDExercise(CRUDBase[Exercise, ExerciseCreate, ExerciseUpdate]):
         return (
             db.query(Exercise)
             .options(
-                joinedload(Exercise.category),
-                joinedload(Exercise.movement_type),
-                joinedload(Exercise.muscle_group),
-                joinedload(Exercise.equipment),
-                joinedload(Exercise.position),
-                joinedload(Exercise.contraction_type),
+                joinedload(Exercise.classification_values).joinedload(ClassificationValue.classification_type),
                 joinedload(Exercise.coach_user),
             )
             .filter(Exercise.id == id)
@@ -128,27 +124,36 @@ class CRUDExercise(CRUDBase[Exercise, ExerciseCreate, ExerciseUpdate]):
         skip: int = 0,
         limit: int = 100,
         coach_id: UUID | None = None,
-        category_id: int | None = None,
-        muscle_group_id: int | None = None,
-        equipment_id: int | None = None,
+        search: str | None = None,
+        classification_type_id: int | None = None,
+        classification_value_id: int | None = None,
     ) -> list[Exercise]:
-        """Get exercises with relations and optional filters"""
+        """Get exercises with dynamic classification relations and optional filters"""
         query = db.query(Exercise).options(
-            joinedload(Exercise.category),
-            joinedload(Exercise.muscle_group),
-            joinedload(Exercise.equipment),
+            joinedload(Exercise.classification_values).joinedload(ClassificationValue.classification_type),
             joinedload(Exercise.coach_user),
         )
 
         # Apply filters
         if coach_id:
             query = query.filter(Exercise.coach_id == coach_id)
-        if category_id:
-            query = query.filter(Exercise.category_id == category_id)
-        if muscle_group_id:
-            query = query.filter(Exercise.muscle_group_id == muscle_group_id)
-        if equipment_id:
-            query = query.filter(Exercise.equipment_id == equipment_id)
+        
+        # Filter by classification type and value
+        if classification_type_id and classification_value_id:
+            query = query.join(Exercise.classification_values).filter(
+                ClassificationValue.classification_type_id == classification_type_id,
+                ClassificationValue.id == classification_value_id
+            )
+        
+        # Search filter
+        if search:
+            query = query.filter(
+                or_(
+                    Exercise.name.ilike(f"%{search}%"),
+                    Exercise.short_name.ilike(f"%{search}%"),
+                    Exercise.description.ilike(f"%{search}%")
+                )
+            )
 
         return query.offset(skip).limit(limit).all()
 

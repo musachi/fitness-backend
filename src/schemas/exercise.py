@@ -40,14 +40,9 @@ class ExerciseBase(BaseModel):
     short_name: str | None = Field(None, max_length=50)
     description: str | None = None
     coach_id: UUID | None = None
-    category_id: int | None = None
-    movement_type_id: int | None = None
-    muscle_group_id: int | None = None
-    equipment_id: int | None = None
-    position_id: int | None = None
-    contraction_type_id: int | None = None
     type: str | None = Field(None, max_length=100)
-    crossfit_variant: dict[str, Any] | None = None
+    crossfit_variant: dict | None = None
+    is_active: bool = True
 
 
 # Create schemas
@@ -110,14 +105,14 @@ class ExerciseUpdate(BaseModel):
     name: str | None = Field(None, min_length=2, max_length=255)
     short_name: str | None = Field(None, max_length=50)
     description: str | None = None
-    category_id: int | None = None
     movement_type_id: int | None = None
     muscle_group_id: int | None = None
     equipment_id: int | None = None
+    goal_id: int | None = None
     position_id: int | None = None
     contraction_type_id: int | None = None
-    type: str | None = Field(None, max_length=100)
-    crossfit_variant: dict[str, Any] | None = None
+    unit: str | None = Field(None, max_length=50)
+    is_active: bool | None = None
 
 
 # In DB schemas
@@ -211,12 +206,22 @@ class ContractionType(ContractionTypeInDB):
 
 class Exercise(ExerciseInDB):
     coach: Any | None = None  # Will be populated
-    category: ExerciseCategory | None = None
-    movement_type: MovementType | None = None
-    muscle_group: MuscleGroup | None = None
-    equipment: Equipment | None = None
-    position: Position | None = None
-    contraction_type: ContractionType | None = None
+    classification_values: list[Any] = []  # Will be populated with ClassificationValue objects
+    
+    # Helper methods to get classifications by type
+    def get_classification_by_type(self, classification_type_name: str) -> Any | None:
+        """Get classification value by type name"""
+        for cv in self.classification_values:
+            if (hasattr(cv, 'classification_type') and 
+                cv.classification_type and 
+                cv.classification_type.name == classification_type_name):
+                return cv
+        return None
+    
+    def get_classification_value_by_type(self, classification_type_name: str) -> str | None:
+        """Get only the value (string) by type name"""
+        classification = self.get_classification_by_type(classification_type_name)
+        return classification.value if classification else None
 
 
 # List responses

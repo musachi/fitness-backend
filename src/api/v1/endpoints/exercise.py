@@ -47,38 +47,31 @@ from src.schemas.exercise import (
 
 router = APIRouter(tags=["exercises"])
 
-
 # Exercise endpoints
 @router.get("/", response_model=ExerciseList)
 async def read_exercises(
     db: Session = Depends(get_db),
+    current_user=Depends(get_current_coach),  # Require authentication
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
     coach_id: UUID | None = None,
-    category_id: int | None = None,
-    muscle_group_id: int | None = None,
-    equipment_id: int | None = None,
     search: str | None = None,
+    classification_type_id: int | None = None,
+    classification_value_id: int | None = None,
 ):
     """
     Retrieve exercises with optional filters
     """
-    if search:
-        exercises_list = exercise.search_exercises(
-            db, query=search, skip=skip, limit=limit
-        )
-        total = len(exercises_list)  # Simplified, should count separately
-    else:
-        exercises_list = exercise.get_multi_with_relations(
-            db,
-            skip=skip,
-            limit=limit,
-            coach_id=coach_id,
-            category_id=category_id,
-            muscle_group_id=muscle_group_id,
-            equipment_id=equipment_id,
-        )
-        total = exercise.count(db)
+    exercises_list = exercise.get_multi_with_relations(
+        db,
+        skip=skip,
+        limit=limit,
+        coach_id=coach_id,
+        search=search,
+        classification_type_id=classification_type_id,
+        classification_value_id=classification_value_id,
+    )
+    total = exercise.count(db)
 
     return ExerciseList(
         exercises=exercises_list,

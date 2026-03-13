@@ -56,12 +56,13 @@ def get_current_active_user(current_user: User = Depends(get_current_user)) -> U
 
 def get_current_coach(current_user: User = Depends(get_current_active_user)) -> User:
     """
-    Dependency to ensure user is a coach
-    Assuming role_id 2 is coach (adjust based on your roles table)
+    Dependency to ensure user is a coach or admin
+    Allows both role_id 1 (admin) and role_id 2 (coach)
     """
-    if current_user.role_id != 2:  # Adjust role_id as needed
+    if current_user.role_id not in [1, 2]:  # Allow both admin and coach
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail=f"Not enough permissions. Role: {current_user.role_id}"
         )
     return current_user
 
