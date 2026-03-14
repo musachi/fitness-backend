@@ -63,13 +63,37 @@ async def read_exercises(
     Retrieve exercises with optional filters
     """
     try:
-        # Simple query without complex relations for now
+        # Query with classification values
         from src.models.exercise import Exercise
-        exercises = db.query(Exercise).offset(skip).limit(limit).all()
+        from sqlalchemy.orm import joinedload
         
-        # Simple return without complex transformations
+        exercises = db.query(Exercise)\
+            .options(joinedload(Exercise.classification_values))\
+            .offset(skip)\
+            .limit(limit)\
+            .all()
+        
+        # Return with classification information
         result = {
-            "exercises": [{"id": ex.id, "name": ex.name, "is_active": ex.is_active} for ex in exercises],
+            "exercises": [
+                {
+                    "id": ex.id, 
+                    "name": ex.name, 
+                    "is_active": ex.is_active,
+                    "classification_values": [
+                        {
+                            "id": cv.id,
+                            "value": cv.value,
+                            "classification_type": {
+                                "id": cv.classification_type.id,
+                                "name": cv.classification_type.name
+                            }
+                        }
+                        for cv in ex.classification_values
+                    ]
+                } 
+                for ex in exercises
+            ],
             "total": len(exercises),
             "page": skip // limit + 1 if limit > 0 else 1,
             "size": limit
