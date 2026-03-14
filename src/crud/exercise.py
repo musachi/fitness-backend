@@ -194,10 +194,29 @@ class CRUDExercise(CRUDBase[Exercise, ExerciseCreate, ExerciseUpdate]):
     def create_with_relations(
         self, db: Session, *, obj_in: ExerciseCreate, coach_id: UUID
     ) -> Exercise:
-        """Create exercise with coach ID"""
+        """Create exercise with coach ID and classification values"""
         exercise_data = obj_in.dict()
         exercise_data["coach_id"] = coach_id
-        return self.create(db, obj_in=ExerciseCreate(**exercise_data))
+        
+        # Remove classification_value_ids from exercise data (it's not a field in Exercise model)
+        classification_value_ids = exercise_data.pop("classification_value_ids", [])
+        
+        # Create the exercise
+        db_exercise = self.create(db, obj_in=ExerciseCreate(**exercise_data))
+        
+        # Add classification values if provided
+        if classification_value_ids:
+            # Get the classification values
+            classification_values = db.query(ClassificationValue).filter(
+                ClassificationValue.id.in_(classification_value_ids)
+            ).all()
+            
+            # Add them to the exercise
+            db_exercise.classification_values = classification_values
+            db.commit()
+            db.refresh(db_exercise)
+        
+        return db_exercise
 
 
 exercise = CRUDExercise(Exercise)
