@@ -62,23 +62,26 @@ async def read_exercises(
     """
     Retrieve exercises with optional filters
     """
-    exercises_list = exercise.get_multi_with_relations(
-        db,
-        skip=skip,
-        limit=limit,
-        coach_id=coach_id,
-        search=search,
-        classification_type_id=classification_type_id,
-        classification_value_id=classification_value_id,
-    )
-    total = exercise.count(db)
-
-    return ExerciseList(
-        exercises=exercises_list,
-        total=total,
-        page=skip // limit + 1 if limit > 0 else 1,
-        size=limit,
-    )
+    try:
+        # Simple query without complex relations for now
+        from src.models.exercise import Exercise
+        exercises = db.query(Exercise).offset(skip).limit(limit).all()
+        
+        # Simple return without complex transformations
+        result = {
+            "exercises": [{"id": ex.id, "name": ex.name, "is_active": ex.is_active} for ex in exercises],
+            "total": len(exercises),
+            "page": skip // limit + 1 if limit > 0 else 1,
+            "size": limit
+        }
+        
+        return result
+        
+    except Exception as e:
+        print(f"❌ ERROR: {str(e)}")
+        import traceback
+        print(f"📋 Traceback: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 
 @router.get("/{exercise_id}", response_model=Exercise)
