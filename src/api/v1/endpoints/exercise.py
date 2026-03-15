@@ -147,20 +147,26 @@ async def update_exercise(
     """
     Update exercise (only creator or admin can update)
     """
-    exercise_obj = exercise.get(db, id=exercise_id)
-    if not exercise_obj:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Exercise not found"
-        )
+    try:
+        exercise_obj = exercise.get(db, id=exercise_id)
+        if not exercise_obj:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Exercise not found"
+            )
 
-    # Check permissions: creator or admin
-    if exercise_obj.coach_id != current_user.id and current_user.role_id != 1:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
-        )
+        # Check permissions: creator or admin
+        if exercise_obj.coach_id != current_user.id and current_user.role_id != 1:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
+            )
 
-    updated_exercise = exercise.update(db, db_obj=exercise_obj, obj_in=exercise_in)
-    return updated_exercise
+        updated_exercise = exercise.update_with_relations(db, db_obj=exercise_obj, obj_in=exercise_in)
+        return updated_exercise
+    except Exception as e:
+        # Escribir error a un archivo para poder verlo
+        with open("error_log.txt", "a") as f:
+            f.write(f"ERROR: {str(e)}\n")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.delete("/{exercise_id}", status_code=status.HTTP_204_NO_CONTENT)

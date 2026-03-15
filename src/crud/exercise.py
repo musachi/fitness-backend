@@ -2,6 +2,7 @@ from uuid import UUID
 
 from sqlalchemy import or_
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import text
 
 from src.models.exercise import (
     ContractionType,
@@ -11,6 +12,7 @@ from src.models.exercise import (
     MovementType,
     MuscleGroup,
     Position,
+    exercise_classifications,
 )
 from src.models.classification import ClassificationValue
 
@@ -217,6 +219,54 @@ class CRUDExercise(CRUDBase[Exercise, ExerciseCreate, ExerciseUpdate]):
             db.refresh(db_exercise)
         
         return db_exercise
+
+    def update_with_relations(
+        self, db: Session, *, db_obj: Exercise, obj_in: ExerciseUpdate | dict[str, Any]
+    ) -> Exercise:
+        """
+        Update exercise and its classification relations.
+        """
+        if isinstance(obj_in, dict):
+            update_data = obj_in
+        else:
+            update_data = obj_in.dict(exclude_unset=True)
+        
+        # Extract classification_value_ids from update_data
+        classification_value_ids = update_data.pop("classification_value_ids", None)
+        
+        # Update basic exercise fields
+        for field, value in update_data.items():
+            if hasattr(db_obj, field):
+                setattr(db_obj, field, value)
+        
+        db.add(db_obj)
+        db.commit()
+        
+        # Update classification relations if provided
+        if classification_value_ids is not None:
+            # Clear existing classifications
+            db.query(exercise_classifications).filter(
+                exercise_classifications.c.exercise_id == db_obj.id
+            ).delete()
+            
+            # Add new classifications
+            if classification_value_ids:
+                classification_values = db.query(ClassificationValue).filter(
+                    ClassificationValue.id.in_(classification_value_ids)
+                ).all()
+                
+                for cv in classification_values:
+                    # Usar la sintaxis correcta de SQLAlchemy
+                    stmt = exercise_classifications.insert().values(
+                        exercise_id=db_obj.id,
+                        classification_value_id=cv.id
+                    )
+                    db.execute(stmt)
+            
+            db.commit()
+        
+        db.refresh(db_obj)
+        return db_obj
 
 
 exercise = CRUDExercise(Exercise)

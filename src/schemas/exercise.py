@@ -105,13 +105,7 @@ class ExerciseUpdate(BaseModel):
     name: str | None = Field(None, min_length=2, max_length=255)
     short_name: str | None = Field(None, max_length=50)
     description: str | None = None
-    movement_type_id: int | None = None
-    muscle_group_id: int | None = None
-    equipment_id: int | None = None
-    goal_id: int | None = None
-    position_id: int | None = None
-    contraction_type_id: int | None = None
-    unit: str | None = Field(None, max_length=50)
+    classification_value_ids: list[int] | None = None  # ✅ DINÁMICO
     is_active: bool | None = None
 
 
