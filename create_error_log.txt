@@ -1,0 +1,25 @@
+CREATE ERROR: 'classification_value_ids' is an invalid keyword argument for Exercise
+TRACEBACK: Traceback (most recent call last):
+  File "C:\Users\cubca\OneDrive\Documents\Things\develop\pavel\premiun_gym\fitness-backend\src\api\v1\endpoints\exercise.py", line 135, in create_exercise
+    created_exercise = exercise.create_with_relations(
+        db, obj_in=exercise_in, coach_id=current_user.id
+    )
+  File "C:\Users\cubca\OneDrive\Documents\Things\develop\pavel\premiun_gym\fitness-backend\src\crud\exercise.py", line 207, in create_with_relations
+    db_exercise = self.create(db, obj_in=ExerciseCreate(**exercise_data))
+  File "C:\Users\cubca\OneDrive\Documents\Things\develop\pavel\premiun_gym\fitness-backend\src\crud\base.py", line 51, in create
+    db_obj = self.model(**obj_in_data)
+  File "<string>", line 4, in __init__
+  File "C:\Users\cubca\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\state.py", line 596, in _initialize_instance
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cubca\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\cubca\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\state.py", line 594, in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cubca\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\decl_base.py", line 2179, in _declarative_constructor
+    raise TypeError(
+        "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+    )
+TypeError: 'classification_value_ids' is an invalid keyword argument for Exercise
+

@@ -204,7 +204,7 @@ class CRUDExercise(CRUDBase[Exercise, ExerciseCreate, ExerciseUpdate]):
         classification_value_ids = exercise_data.pop("classification_value_ids", [])
         
         # Create the exercise
-        db_exercise = self.create(db, obj_in=ExerciseCreate(**exercise_data))
+        db_exercise = self.create(db, obj_in=exercise_data)
         
         # Add classification values if provided
         if classification_value_ids:
@@ -213,8 +213,13 @@ class CRUDExercise(CRUDBase[Exercise, ExerciseCreate, ExerciseUpdate]):
                 ClassificationValue.id.in_(classification_value_ids)
             ).all()
             
-            # Add them to the exercise
-            db_exercise.classification_values = classification_values
+            # Add them to the exercise using the relationship table
+            for cv in classification_values:
+                stmt = exercise_classifications.insert().values(
+                    exercise_id=db_exercise.id,
+                    classification_value_id=cv.id
+                )
+                db.execute(stmt)
             db.commit()
             db.refresh(db_exercise)
         

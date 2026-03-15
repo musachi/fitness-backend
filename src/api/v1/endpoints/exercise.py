@@ -51,7 +51,6 @@ router = APIRouter(tags=["exercises"])
 @router.get("/", response_model=ExerciseList)
 async def read_exercises(
     db: Session = Depends(get_db),
-    current_user=Depends(get_current_coach),  # Require authentication
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=1000),
     coach_id: UUID | None = None,
@@ -62,50 +61,23 @@ async def read_exercises(
     """
     Retrieve exercises with optional filters
     """
-    try:
-        # Query with classification values
-        from src.models.exercise import Exercise
-        from sqlalchemy.orm import joinedload
-        
-        exercises = db.query(Exercise)\
-            .options(joinedload(Exercise.classification_values))\
-            .offset(skip)\
-            .limit(limit)\
-            .all()
-        
-        # Return with classification information
-        result = {
-            "exercises": [
-                {
-                    "id": ex.id, 
-                    "name": ex.name, 
-                    "is_active": ex.is_active,
-                    "classification_values": [
-                        {
-                            "id": cv.id,
-                            "value": cv.value,
-                            "classification_type": {
-                                "id": cv.classification_type.id,
-                                "name": cv.classification_type.name
-                            }
-                        }
-                        for cv in ex.classification_values
-                    ]
-                } 
-                for ex in exercises
-            ],
-            "total": len(exercises),
-            "page": skip // limit + 1 if limit > 0 else 1,
-            "size": limit
-        }
-        
-        return result
-        
-    except Exception as e:
-        print(f"❌ ERROR: {str(e)}")
-        import traceback
-        print(f"📋 Traceback: {traceback.format_exc()}")
-        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    exercises_list = exercise.get_multi_with_relations(
+        db,
+        skip=skip,
+        limit=limit,
+        coach_id=coach_id,
+        search=search,
+        classification_type_id=classification_type_id,
+        classification_value_id=classification_value_id,
+    )
+    total = exercise.count(db)
+
+    return ExerciseList(
+        exercises=exercises_list,
+        total=total,
+        page=skip // limit + 1 if limit > 0 else 1,
+        size=limit,
+    )
 
 
 @router.get("/{exercise_id}", response_model=Exercise)
@@ -147,26 +119,20 @@ async def update_exercise(
     """
     Update exercise (only creator or admin can update)
     """
-    try:
-        exercise_obj = exercise.get(db, id=exercise_id)
-        if not exercise_obj:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Exercise not found"
-            )
+    exercise_obj = exercise.get(db, id=exercise_id)
+    if not exercise_obj:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Exercise not found"
+        )
 
-        # Check permissions: creator or admin
-        if exercise_obj.coach_id != current_user.id and current_user.role_id != 1:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
-            )
+    # Check permissions: creator or admin
+    if exercise_obj.coach_id != current_user.id and current_user.role_id != 1:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
+        )
 
-        updated_exercise = exercise.update_with_relations(db, db_obj=exercise_obj, obj_in=exercise_in)
-        return updated_exercise
-    except Exception as e:
-        # Escribir error a un archivo para poder verlo
-        with open("error_log.txt", "a") as f:
-            f.write(f"ERROR: {str(e)}\n")
-        raise HTTPException(status_code=500, detail=str(e))
+    updated_exercise = exercise.update_with_relations(db, db_obj=exercise_obj, obj_in=exercise_in)
+    return updated_exercise
 
 
 @router.delete("/{exercise_id}", status_code=status.HTTP_204_NO_CONTENT)

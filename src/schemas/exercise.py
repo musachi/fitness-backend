@@ -6,6 +6,9 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
+# Import classification schemas
+from .classification import ClassificationValue
+
 
 # Base schemas for classification tables
 class ExerciseCategoryBase(BaseModel):
@@ -71,7 +74,7 @@ class ContractionTypeCreate(ContractionTypeBase):
 
 
 class ExerciseCreate(ExerciseBase):
-    pass
+    classification_value_ids: list[int] | None = None  # ✅ DINÁMICO
 
 
 # Update schemas (NUEVOS - AGREGAR ESTOS)
@@ -200,7 +203,7 @@ class ContractionType(ContractionTypeInDB):
 
 class Exercise(ExerciseInDB):
     coach: Any | None = None  # Will be populated
-    classification_values: list[Any] = []  # Will be populated with ClassificationValue objects
+    classification_values: list[ClassificationValue] = []  # Use proper schema
     
     # Helper methods to get classifications by type
     def get_classification_by_type(self, classification_type_name: str) -> Any | None:
@@ -213,7 +216,7 @@ class Exercise(ExerciseInDB):
         return None
     
     def get_classification_value_by_type(self, classification_type_name: str) -> str | None:
-        """Get only the value (string) by type name"""
+        """Get only value (string) by type name"""
         classification = self.get_classification_by_type(classification_type_name)
         return classification.value if classification else None
 
