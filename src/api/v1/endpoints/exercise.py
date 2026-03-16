@@ -135,7 +135,7 @@ async def update_exercise(
     return updated_exercise
 
 
-@router.delete("/{exercise_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{exercise_id}")
 async def delete_exercise(
     exercise_id: int,
     db: Session = Depends(get_db),
@@ -157,7 +157,7 @@ async def delete_exercise(
         )
 
     exercise.remove(db, id=exercise_id)
-    return None
+    return {"message": "Exercise deleted successfully"}
 
 
 # Classification endpoints (Exercise Categories)
